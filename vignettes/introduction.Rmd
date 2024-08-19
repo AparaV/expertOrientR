@@ -1,0 +1,137 @@
+---
+title: "Towards Complete Causal Explanation with Expert Knowledge"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Towards Complete Causal Explanation with Expert Knowledge}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+```{r setup}
+library(expertOrientR)
+```
+
+
+First, we will randomly generate a MAG and the corresponding PAG.
+
+The adjacency matrix follows the convention in `pcalg`:
+
+* 0: No edge
+* 1: Circle
+* 2: Arrowhead
+* 3: Tail
+
+For example:
+
+* `amat[a,b] = 2` and `amat[b,a] = 3` denotes the edge `a --> b`
+* `amat[a,b] = 2` and `amat[b,a] = 1` denotes the edge `a o-> b`
+
+We do not allow selection bias. Therefore, we cannot have edges `a --- b` or `a o-- b`.
+
+```{r generate MAG and PAG}
+seed <- 3
+
+n <- 15
+p <- 0.25
+latent_fraction <- 0.1
+
+mag_pag_object <- expertOrientR::generate_mag_pag(n, p, latent_fraction, seed=seed)
+mag <- mag_pag_object$mag
+pag <- mag_pag_object$pag
+```
+
+
+We will identify two circle edgemarks in the PAG and select those as expert knowledge and add them to the PAG
+
+```{r select edges from MAG as expert knowledge}
+num_expert_edges <- 2
+
+# Find partially directed edges in the PAG
+partial_edges_0 <- expertOrientR::get_partial_edges(pag)
+pd_size_0 <- nrow(partial_edges_0)
+num_edges <- nrow(which(pag != 0, arr.ind=T)) %/% 2
+
+# Find all non-identified edges in the PAG
+nonidentifed_edges <- which(pag == 1, arr.ind=T)
+num_nonidentifed_edges <- nrow(nonidentifed_edges)
+
+# Select background knowledge from MAG
+expert_edges <- nonidentifed_edges[sample(num_nonidentifed_edges, num_expert_edges), ]
+
+cat("Total non-identifed edges:", num_nonidentifed_edges, "\n")
+cat("Number of expert knowledge edges:", num_expert_edges, "\n")
+if (num_expert_edges == 0) {
+    cat("\nNo non-identified edges in the PAG\n")
+}
+```
+
+```{r add expert knowledge edges to PAG}
+PAG_with_bg <- pag
+for (i in seq_len(num_expert_edges)) {
+    
+    if (num_expert_edges == 1) {
+        a <- expert_edges[1]
+        b <- expert_edges[2]
+    }
+    else {
+        a <- expert_edges[i, 1]
+        b <- expert_edges[i, 2]
+    }
+    
+    if (mag[a, b] == 3) {
+        edge_type <- "*--"
+    }
+    else {
+        edge_type <- "*->"
+    }
+    
+    cat("Adding expert knowledge (", i, ") : Edge between", a, "and", b, "marked as", a, edge_type, b, "\n")
+    PAG_with_bg[a, b] <- mag[a, b]
+    
+    # If we added a tail as background knowledge, mark the other as arrow
+    if (mag[a, b] == 3) {
+        PAG_with_bg[b, a] <- 2
+        cat("Also marking arrowhead", row.names(PAG_with_bg)[a], "<--", row.names(PAG_with_bg)[b], "\n")
+    }
+}
+```
+
+Next, we complete the orientation rules.
+When completeing the orientation rules, we are turning off:
+
+* Rule 3 (see our paper for why this rule will never be invoked)
+* Rules 5, 6, and 7 (we assume no selection bias and these rules involve selection bias)
+* Rule 9 (see our paper for why this rule will never be invoked)
+* Rule 11 (this rule is implemented as a subcase of Rule 4 for computational efficiency)
+
+```{r complete rules}
+rules_to_use <- c(TRUE, TRUE, FALSE, TRUE, FALSE,
+                  FALSE, FALSE, TRUE, FALSE, TRUE,
+                  FALSE, TRUE, TRUE)
+
+result <- expertOrientR::complete_pag(PAG_with_bg, rules=rules_to_use, verbose=TRUE)
+G <- result$pag
+```
+
+And finally, we verify the completeness conjecture.
+
+```{r verify completeness}
+
+conjecture_res <- verify_conjecture(pag, G, verbose=TRUE)
+
+if (conjecture_res) {
+    cat("Successfully verified conjecture\n")
+} else {
+    cat("Graph is not complete!\n")
+}
+```
+
+
