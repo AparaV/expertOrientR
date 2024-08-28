@@ -2,13 +2,6 @@
 # Rule 4
 #
 
-# library(pcalg)
-# library(graph)
-
-# source("graph_utils.R")
-
-
-
 discriminating_paths_helper <- function(pag, path, y, all_paths=list()) {
     p <- nrow(pag)
     n <- length(path)
@@ -110,44 +103,7 @@ find_almost_discriminating_paths <- function(pag, x, y) {
     return(paths)
 }
 
-
-# rule.4 <- function(pag, neighbors=NULL, unfVect=NULL, verbose=FALSE) {
-#     
-#     p <- nrow(pag)
-#     
-#     for (x in seq(p)) {
-#         for (y in seq(p)) {
-#             if (x == y) {
-#                 next
-#             }
-#             
-#             # find all almost discriminating paths
-#             paths_x_y <- find_almost_discriminating_paths(pag, x, y)
-#             
-#             # for every almost discriminating path perform orientation
-#             for (idx in seq_along(paths_x_y)) {
-#                 path_i <- paths_x_y[[idx]]
-#                 n <- length(path_i)
-#                 q_k <- path_i[n-1]
-#                 if (pag[y, q_k] == 1) {
-#                     
-#                     if (verbose) {
-#                         cat("Found almost discriminating path: ", x, " ... ")
-#                         cat(q_k, " o-* ", y, "\n")
-#                         cat("Using Rule 4 to orient ", q_k, " -> ", y, "\n\n")
-#                     }
-#                     
-#                     pag[y, q_k] <- 3
-#                     pag[q_k, y] <- 2
-#                 }
-#             }
-#         }
-#     }
-#     
-#     return(pag)
-# }
-
-rule.4.fast <- function(pag, neighbors=NULL, unfVect=NULL, verbose=FALSE) {
+rule.4 <- function(pag, neighbors=NULL, verbose=FALSE) {
     
     
     p <- nrow(pag)
@@ -192,92 +148,4 @@ rule.4.fast <- function(pag, neighbors=NULL, unfVect=NULL, verbose=FALSE) {
     return(pag)
 }
 
-# rule.4.fast.v2 <- function(pag, neighbors=NULL, unfVect=NULL, verbose=FALSE) {
-#     
-#     
-#     p <- nrow(pag)
-#     
-#     if (is.null(neighbors)) {
-#         neighbors <- find_neighbors(pag)
-#     }
-#     
-#     # This gives us a list of candidate end points
-#     partial_edges <- get_partial_edges(pag)
-#     
-#     for (i in seq_len(nrow(partial_edges))) {
-#         q_k <- partial_edges[i, 1]
-#         y <- partial_edges[i, 2]
-#         
-#         # Find neighbors of y, Ne(y)
-#         ne_y <- neighbors[[y]]
-#         ne_y <- c(ne_y, y)
-#         
-#         # Find parents of y, Pa(y)
-#         pa_y <- which(pag[, y] == 2 & pag[y, ] == 3, arr.ind=T)
-#         # print(y)
-#         # print(pag)
-#         # print(pa_y)
-#         # print("---")
-#         
-#         # Find neighbors of Pa(y), NePa(y) = U_{q_k \in Pa(y)} Ne(q_k)
-#         nepa_y <- c()
-#         # print(pag)
-#         for (q_ki in seq_len(length(pa_y))) {
-#             q_k <- pa_y[q_ki]
-#             # cat(q_k, ",")
-#             nepa_y <- c(nepa_y, neighbors[[q_k]])
-#         }
-#         nepa_y <- unique(nepa_y)
-#         # cat("\n")
-#         # print(nepa_y)
-#         # print("---")
-#         
-#         # Find candidates of x, X = NePa(y) \ Ne(y)
-#         X_candidates <- setdiff(nepa_y, ne_y)
-#         
-#         
-#         # for (x in seq(p)) {
-#         for (xi in seq_len(length(X_candidates))) {
-#             x <- X_candidates[xi]
-#             if (x == y) {
-#                 next
-#             }
-#             
-#             # find all almost discriminating paths
-#             paths_x_y <- find_almost_discriminating_paths(pag, x, y)
-#             
-#             # for every almost discriminating path perform orientation
-#             for (idx in seq_along(paths_x_y)) {
-#                 path_i <- paths_x_y[[idx]]
-#                 n <- length(path_i)
-#                 q_k <- path_i[n-1]
-#                 if (pag[y, q_k] == 1) {
-#                     
-#                     if (verbose) {
-#                         cat("Found almost discriminating path: ", x, " ... ")
-#                         cat(q_k, " o-* ", y, "\n")
-#                         cat("Using Rule 4 to orient ", q_k, " -> ", y, "\n\n")
-#                     }
-#                     
-#                     pag[y, q_k] <- 3
-#                     pag[q_k, y] <- 2
-#                 }
-#             }
-#         }
-#     }
-#     
-#     
-#     return(pag)
-# }
-
-
-
-# pag <- matrix(c(c(0, 2, 0, 2, 2),
-#                 c(3, 0, 1, 0, 3),
-#                 c(0, 2, 0, 2, 2),
-#                 c(2, 0, 1, 0, 1),
-#                 c(1, 2, 1, 2, 0)), nrow=5)
-# pag <- t(pag)
-# 
-# rule.4.fast(pag, T)
 

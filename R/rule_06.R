@@ -2,11 +2,7 @@
 # Rule 06
 #
 
-# library(pcalg)
-# library(graph)
-
-
-rule.6 <- function(pag, unfVect=NULL, verbose=FALSE) {
+rule.6 <- function(pag, verbose=FALSE) {
     ind <- which((pag != 0 & t(pag) == 1), arr.ind = TRUE)
     for (i in seq_len(nrow(ind))) {
         b <- ind[i, 1]

@@ -2,11 +2,7 @@
 # Rule 11
 #
 
-# library(pcalg)
-# library(graph)
-
-
-rule.11 <- function(pag, unfVect=NULL, verbose=FALSE) {
+rule.11 <- function(pag, verbose=FALSE) {
     # Rule 11 general
     # Find: a *--* b, a *--* c, a o--* d
     #       b *--> c

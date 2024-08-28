@@ -2,11 +2,7 @@
 # Rule 10
 #
 
-# library(pcalg)
-# library(graph)
-
-
-rule.10 <- function(pag, unfVect=NULL, verbose=FALSE) {
+rule.10 <- function(pag, verbose=FALSE) {
     p <- as.numeric(dim(pag)[1])
     
     # Find all o-> edges in pag
@@ -49,21 +45,11 @@ rule.10 <- function(pag, unfVect=NULL, verbose=FALSE) {
                         (pag[a, d] == 1 || pag[a, d] == 2) &&
                         (pag[d, a] == 1 || pag[d, a] == 3) &&
                         pag[d, b] == 0 && pag[b, d] == 0) {
-                        if (length(unfVect) == 0) {
-                            # Orient a --> c
-                            pag[c, a] <- 3
-                            if (verbose)
-                                cat("\nRule 10 [easy]", "\nOrient:",
-                                    a, "->", c, "\n")
+                        # Orient a --> c
+                        pag[c, a] <- 3
+                        if (verbose) {
+                            cat("\nRule 10 [easy]", "\nOrient:", a, "->", c, "\n")
                         }
-                        # else if (!any(unfVect == triple2numb(p,
-                        #                                      b, a, d), na.rm = TRUE) && !any(unfVect ==
-                        #                                                                      triple2numb(p, d, a, b), na.rm = TRUE)) {
-                        #     pag[c, a] <- 3
-                        #     if (verbose)
-                        #         cat("\nRule 10 [easy]", "\nConservatively orient:",
-                        #             a, "->", c, "\n")
-                        # }
                     }
                     
                     # Next, hard case:
@@ -71,9 +57,7 @@ rule.10 <- function(pag, unfVect=NULL, verbose=FALSE) {
                     else {
                         
                         # Find all X s.t. there is a p.d. edge from a to X
-                        indX <- which((pag[a, ] == 1 | pag[a, ] == 2) &
-                                          (pag[, a] == 1 | pag[, a] == 3),
-                                      arr.ind = TRUE)
+                        indX <- which((pag[a, ] == 1 | pag[a, ] == 2) & (pag[, a] == 1 | pag[, a] == 3), arr.ind = TRUE)
                         indX <- setdiff(indX, c)
                         
                         # Any p.d. path from a to b or a to d needs to have X
@@ -98,9 +82,7 @@ rule.10 <- function(pag, unfVect=NULL, verbose=FALSE) {
                                     if (first.pos == b) {
                                         t1 <- c(a,b)
                                     } else {
-                                        t1 <- pcalg:::minUncovPdPath(
-                                            p, pag, a, first.pos, b, unfVect = unfVect,
-                                            verbose = verbose)
+                                        t1 <- pcalg:::minUncovPdPath(p, pag, a, first.pos, b, unfVect = NULL, verbose = verbose)
                                     }
                                     
                                     if (length(t1) > 1) {     
@@ -111,27 +93,16 @@ rule.10 <- function(pag, unfVect=NULL, verbose=FALSE) {
                                             t2 <- c(a,d)
                                         }
                                         else {
-                                            t2 <- pcalg:::minUncovPdPath(p, pag, a, sec.pos, d, unfVect = unfVect,
-                                                                         verbose = verbose)
+                                            t2 <- pcalg:::minUncovPdPath(p, pag, a, sec.pos, d, unfVect = NULL, verbose = verbose)
                                         }
                                         
                                         # Make sure first.pos and sec.pos are not connected
                                         # Then orient a --> c
-                                        if (length(t2) > 1 && first.pos !=sec.pos &&
-                                            pag[first.pos,sec.pos] == 0) {
-                                            if (length(unfVect) == 0) {
-                                                pag[c, a] <- 3
-                                                if (verbose)
-                                                    cat("\nRule 10", "\nOrient:",
-                                                        a, "->", c, "\n") 
+                                        if (length(t2) > 1 && first.pos !=sec.pos && pag[first.pos,sec.pos] == 0) {
+                                            pag[c, a] <- 3
+                                            if (verbose) {
+                                                cat("\nRule 10", "\nOrient:", a, "->", c, "\n") 
                                             } 
-                                            # else if (!any(unfVect == triple2numb(p, first.pos, a, sec.pos), na.rm = TRUE) &&
-                                            #          !any(unfVect == triple2numb(p, sec.pos, a, first.pos), na.rm = TRUE)) {    
-                                            #     pag[c, a] <- 3
-                                            #     if (verbose)
-                                            #         cat("\nRule 10", "\nConservatively orient:",
-                                            #             a, "->", c, "\n")
-                                            # }
                                         } 
                                     } 
                                 }
