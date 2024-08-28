@@ -1,11 +1,9 @@
 Package: expertOrientR
 Title: Towards Complete Causal Explanation with Expert Knowledge
 Version: 0.0.0.9000
-Authors@R: 
-    person("Aparajithan", "Venkateswaran", , "apara.vnkat@gmail.com", role = c("aut", "cre"),
-           comment = c(ORCID = "0000-0002-0193-8573"))
-    person("Emilija", "Perkovic", , "perkovic@uw.com", role = c("aut"),
-           comment = c(ORCID = "0000-0003-3198-9213"))
+Authors@R: c(person("Aparajithan", "Venkateswaran", email = "apara.vnkat@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-0193-8573")),
+           person("Emilija", "Perkovic", email = "perkovic@uw.com", role = c("aut"), comment = c(ORCID = "0000-0003-3198-9213"))
+           )
 Description: Orientation rules for adding expert knowledge to restrict Markov equivalence class of Maximal Ancestral Graphs learned from observational data. The package also contains an algorithm to verify completeness after adding expert knowledge to test for proper restrictions of the equivalance class.
 License: MIT + file LICENSE
 Encoding: UTF-8
