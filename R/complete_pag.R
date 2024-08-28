@@ -1,4 +1,20 @@
 
+#' Complete expert knowledge
+#' 
+#' Perform orientation on an ancestral partial mixed graph to restrict equivalence class to expert knowledge.
+#'
+#' @param pag Adjacency matrix of ancestral partial mixed graph.
+#'  This is the essential graph with some circle edges oriented as per expert knowledge.
+#'  The matrix follows the convention in pcalg: 0 refers to no edge. 1 refers to circle edge mark.
+#'  2 refers to an arrowhead and 3 refers to a tail. For example, `pag[a, b] = 2` and `pag[b, a] = 1`
+#'  says that the edge is `a o-> b`.
+#' @param rules A boolean vector of length 13 indicating which rules are to be invoked
+#' @param verbose Boolean indicating verboseness
+#' @param debug Boolean indicating verboseness level higher than verbose
+#' @returns A list with two named elements, `pag` and `counter`.
+#'  `pag` is the adjacency matrix obtained after completing all the rules turned on in the `rules` parameter.
+#'  `counter` is a vector of length 13 indicating how many times each rule was invoked.
+#' @seealso [expertOrientR::generate_mag_pag()] for format of adjacency matrices
 #' @export
 complete_pag <- function(pag, rules=NULL, verbose=FALSE, debug=FALSE) {
     if (!is.numeric(pag)) {

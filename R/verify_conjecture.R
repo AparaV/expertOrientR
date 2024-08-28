@@ -1,8 +1,16 @@
-# source("graph_utils.R")
-# source("complete_pag.R")
 
-
-
+#' Verify conjecture
+#' 
+#' Verify whether the restricted equivalence class, represented by an adjacency matrix,
+#' is a proper restriction with respect to some admissible and consistent expert knowledge.
+#' 
+#' @param pag Adjacency matrix of ancestral partial mixed graph. Typically, the output of `expertOrientR::complete_pag`
+#' @param G Essential ancestral graph
+#' @param stop_first Whether we should stop our search if we find some MAG that shares the same invariant edges as `pag`.
+#' User should always set this to `FALSE` for verifying conjecture. It is set to `TRUE` by internal functions.
+#' @param verbose Boolean describing verboseness level
+#' @returns Boolean. `TRUE` if `pag` is a proper restriction. `FALSE` if `pag` is not a proper restriction.
+#' @seealso [expertOrientR::generate_mag_pag()] for format of adjacency matrices
 #' @export
 verify_conjecture <- function(pag, G, stop_first=FALSE, verbose=FALSE) {
     
