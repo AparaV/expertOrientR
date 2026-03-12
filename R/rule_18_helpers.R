@@ -4,20 +4,6 @@
 # Helper functions for implementing Rule 18 orientation rule for PAGs
 #
 
-library(graph)
-library(RBGL)
-
-# Source Rule 14 helpers to reuse find_unbridged_paths
-if (!exists("find_unbridged_paths")) {
-    if (file.exists("rule_14_helpers.R")) {
-        source("rule_14_helpers.R")
-    } else if (file.exists("orientation_rules/rule_14_helpers.R")) {
-        source("orientation_rules/rule_14_helpers.R")
-    } else {
-        source("Code/orientation_rules/rule_14_helpers.R")
-    }
-}
-
 
 #' Find minimal possible directed paths from source to target
 #'

@@ -349,7 +349,7 @@ bridged_new <- function(PossDe_X_new, local_parent, adj_mat, verbose = FALSE) {
         return(0)  # Single vertex is unbridged
     }
     
-    conn.comp <- connectedComp(as(amat, "graphNEL"))
+    conn.comp <- RBGL::connectedComp(methods::as(amat, "graphNEL"))
     indicator <- TRUE
     
     if (verbose) {

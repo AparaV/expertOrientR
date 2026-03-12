@@ -5,13 +5,6 @@
 # according to the formal definitions.
 #
 
-suppressPackageStartupMessages({
-    library(graph)
-    library(RBGL)
-})
-
-source("orientation_rules/helpers.R")
-
 # ==============================================================================
 # MODULE 1: Find Unbridged Paths
 # ==============================================================================
@@ -203,7 +196,7 @@ find_all_prior_to <- function(pag, B, X, verbose = FALSE) {
     X_circle <- which(pag[, X] == 1 & pag[X, ] != 0)
     
     # Also include possible ancestors of B
-    possAn_B <- find_possibleancestor(pag, B)
+    possAn_B <- expertOrientR:::find_possibleancestor(pag, B)
     candidates <- intersect(X_circle, possAn_B)
     candidates <- setdiff(candidates, X)  # Exclude X itself
     
@@ -328,7 +321,7 @@ find_prior_condition_2 <- function(pag, target, X, candidate_set) {
         for (Fi in candidates_with_circle) {
             # Check for uncovered PD path from X to M through Fi
             # Fi must be immediately after X in the path
-            path <- minUncovPdPath(nrow(pag), pag, X, Fi, M, unfVect = NULL, verbose = FALSE)
+            path <- expertOrientR:::minUncovPdPath(nrow(pag), pag, X, Fi, M, unfVect = NULL, verbose = FALSE)
             
             if (!is.na(path[1]) && length(path) >= 3) {
                 # Verify Fi is the second vertex (immediately after X)
@@ -422,7 +415,7 @@ find_prior_condition_3 <- function(pag, target, X, candidate_set, verbose = FALS
             }
             
             if (length(PossDe_a) > 0) {
-                bridged_result <- bridged_new(PossDe_a, new_S_A, pag, verbose = verbose)
+                bridged_result <- expertOrientR:::bridged_new(PossDe_a, new_S_A, pag, verbose = verbose)
                 if (verbose) {
                     cat("      bridged_new result:", bridged_result, "(0=unbridged, 1=bridged)\n")
                 }
@@ -438,14 +431,3 @@ find_prior_condition_3 <- function(pag, target, X, candidate_set, verbose = FALS
     
     return(vertices)
 }
-
-
-# ==============================================================================
-# Helper functions from original implementation (reused from helpers.R)
-# ==============================================================================
-
-# Note: The following functions are sourced from helpers.R:
-#   - find_possibleancestor: Finds all possible ancestors of a vertex
-#   - minUncovPdPath: Finds minimal uncovered possibly directed paths (with faithfulness checking)
-#   - updateList: Updates path lists in iterative functions
-#   - bridged_new: Checks if path structure is bridged (with verbose support and proper error handling)

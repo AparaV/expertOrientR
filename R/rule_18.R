@@ -5,20 +5,6 @@
 # Based on formal definition from the paper
 #
 
-library(graph)
-library(RBGL)
-
-# Source helpers
-if (!exists("find_possible_directed_paths")) {
-    if (file.exists("rule_18_helpers.R")) {
-        source("rule_18_helpers.R")
-    } else if (file.exists("orientation_rules/rule_18_helpers.R")) {
-        source("orientation_rules/rule_18_helpers.R")
-    } else {
-        source("Code/orientation_rules/rule_18_helpers.R")
-    }
-}
-
 
 #' Apply Rule 18 orientation rule
 #'
@@ -86,7 +72,7 @@ rule.18 <- function(pag, unfVect=NULL, verbose = FALSE) {
         }
         
         # Find two minimal possible directed paths from D to A
-        paths <- find_possible_directed_paths(pag, D, A, verbose = verbose)
+        paths <- expertOrientR:::find_possible_directed_paths(pag, D, A, verbose = verbose)
         
         if (length(paths) < 2) {
             if (verbose) {
@@ -96,8 +82,8 @@ rule.18 <- function(pag, unfVect=NULL, verbose = FALSE) {
         }
         
         # Get T1 and T2 (second vertices in first two paths)
-        T1 <- get_path_second_vertex(paths[[1]])
-        T2 <- get_path_second_vertex(paths[[2]])
+        T1 <- expertOrientR:::get_path_second_vertex(paths[[1]])
+        T2 <- expertOrientR:::get_path_second_vertex(paths[[2]])
         
         if (is.null(T1) || is.null(T2)) {
             if (verbose) {
@@ -115,7 +101,7 @@ rule.18 <- function(pag, unfVect=NULL, verbose = FALSE) {
         }
         
         # Check Condition (b): Are T1 and T2 non-adjacent?
-        if (!are_adjacent(pag, T1, T2)) {
+        if (!expertOrientR:::are_adjacent(pag, T1, T2)) {
             if (verbose) {
                 cat("  ✓ Condition (b) satisfied: T1 and T2 are NOT adjacent\n")
                 cat("  → Orienting A o-> B as A <-> B\n")
@@ -142,7 +128,7 @@ rule.18 <- function(pag, unfVect=NULL, verbose = FALSE) {
         
         # Find unbridged paths between T1 and T2
         # Note: find_unbridged_paths needs a "parent" vertex; we use D here
-        unbridged_paths <- find_unbridged_paths(pag, T1, T2, D, verbose = verbose)
+        unbridged_paths <- expertOrientR:::find_unbridged_paths(pag, T1, T2, D, verbose = verbose)
         
         if (length(unbridged_paths) == 0) {
             if (verbose) {
@@ -159,7 +145,7 @@ rule.18 <- function(pag, unfVect=NULL, verbose = FALSE) {
             
             for (Fi in path) {
                 # Check if D o-* Fi (circle at Fi, anything at D except no edge)
-                if (!check_edge_pattern(pag, Fi, D, "o-*")) {
+                if (!expertOrientR:::check_edge_pattern(pag, Fi, D, "o-*")) {
                     all_connected <- FALSE
                     break
                 }

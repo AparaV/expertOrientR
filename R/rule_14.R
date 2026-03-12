@@ -95,7 +95,7 @@ rule.14 <- function(pag, unfVect = NULL, verbose = FALSE) {
         # Step 3: Find connected components in circle subgraph (if needed for Condition a)
         conn.comp <- NULL
         if (has_oo_edges) {
-            conn.comp <- connectedComp(as(X_circle_amat, "graphNEL"))
+            conn.comp <- RBGL::connectedComp(methods::as(X_circle_amat, "graphNEL"))
             
             if (verbose) {
                 cat("  Found", length(conn.comp), "connected component(s) in circle subgraph\n")
@@ -119,7 +119,7 @@ rule.14 <- function(pag, unfVect = NULL, verbose = FALSE) {
         }
         
         # Optimization: Only consider vertices that could be prior to B
-        possAn_B <- find_possibleancestor(pag, B)
+        possAn_B <- expertOrientR:::find_possibleancestor(pag, B)
         Z <- setdiff(intersect(X_circle, possAn_B), X)
         
         if (verbose) {
@@ -142,8 +142,8 @@ rule.14 <- function(pag, unfVect = NULL, verbose = FALSE) {
                 }
                 
                 # Step 5a: Check if both T1 and T2 are prior to B
-                T1_prior <- is_prior_to(pag, T1, B, X, verbose = verbose)
-                T2_prior <- is_prior_to(pag, T2, B, X, verbose = verbose)
+                T1_prior <- expertOrientR:::is_prior_to(pag, T1, B, X, verbose = verbose)
+                T2_prior <- expertOrientR:::is_prior_to(pag, T2, B, X, verbose = verbose)
                 
                 if (!T1_prior || !T2_prior) {
                     if (verbose) {
@@ -186,7 +186,7 @@ rule.14 <- function(pag, unfVect = NULL, verbose = FALSE) {
                 }
                 
                 # Look for unbridged paths
-                unbridged_paths <- find_unbridged_paths(pag, T1, T2, X, verbose = verbose)
+                unbridged_paths <- expertOrientR:::find_unbridged_paths(pag, T1, T2, X, verbose = verbose)
                 
                 if (length(unbridged_paths) > 0) {
                     if (verbose) {
