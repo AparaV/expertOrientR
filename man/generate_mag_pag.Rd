@@ -4,7 +4,14 @@
 \alias{generate_mag_pag}
 \title{Generate MAG and PAG}
 \usage{
-generate_mag_pag(size, prob, L_fraction, seed = NA)
+generate_mag_pag(
+  size,
+  prob,
+  L_fraction,
+  seed = NA,
+  pick_latent_by_count = FALSE,
+  latent_count = NULL
+)
 }
 \arguments{
 \item{size}{Number of nodes in the underlying causal DAG.
@@ -16,11 +23,18 @@ Note that this is not the number of nodes in the ancestral graphs.}
 that should be chosen as latent nodes}
 
 \item{seed}{Random seed. Defaults to \code{NA}}
+
+\item{pick_latent_by_count}{Whether to pick latent nodes by count instead of fraction. Defaults to \code{FALSE}.}
+
+\item{latent_count}{If \code{pick_latent_by_count} is \code{TRUE}, the number of latent nodes to pick. Defaults to \code{NULL}.}
 }
 \value{
-Named list containing two elements, \code{mag} and \code{pag}.
+Named list containing four elements, \code{mag}, \code{pag}, \code{dag}, \code{V}, and \code{L}.
 \code{mag} is the adjacency matrix of the generated MAG.
 \code{pag} is the corresponding essential ancestral graph (PAG) for \code{mag}.
+\code{dag} is the underlying causal DAG.
+\code{V} is the list of observed variables.
+\code{L} is the list of latent variables.
 }
 \description{
 Randomly generate a MAG (maximal ancestral graph) and PAG (partial ancestral graph i.e., the essential ancestral graph).

@@ -24,7 +24,8 @@ verify_conjecture <- function(pag, G, stop_first=FALSE, verbose=FALSE) {
     # Turn off R3, R5-R7, R9, R11
     rules_to_use <- c(TRUE, TRUE, FALSE, TRUE, FALSE,
                       FALSE, FALSE, TRUE, FALSE, TRUE,
-                      FALSE, TRUE, TRUE)
+                      FALSE, TRUE, TRUE, TRUE, FALSE,
+                      FALSE, FALSE, TRUE)
     rules_verbose <- FALSE
     inferred_edges_verbose <- TRUE
     

@@ -1,4 +1,3 @@
-
 #' Generate MAG and PAG
 #' 
 #' Randomly generate a MAG (maximal ancestral graph) and PAG (partial ancestral graph i.e., the essential ancestral graph).
@@ -17,11 +16,16 @@
 #' @param L_fraction Fraction of source and confounding nodes in the underlying DAG
 #' that should be chosen as latent nodes
 #' @param seed Random seed. Defaults to `NA`
-#' @returns Named list containing two elements, `mag` and `pag`.
+#' @param pick_latent_by_count Whether to pick latent nodes by count instead of fraction. Defaults to `FALSE`.
+#' @param latent_count If `pick_latent_by_count` is `TRUE`, the number of latent nodes to pick. Defaults to `NULL`.
+#' @returns Named list containing four elements, `mag`, `pag`, `dag`, `V`, and `L`.
 #' `mag` is the adjacency matrix of the generated MAG.
 #' `pag` is the corresponding essential ancestral graph (PAG) for `mag`.
+#' `dag` is the underlying causal DAG.
+#' `V` is the list of observed variables.
+#' `L` is the list of latent variables.
 #' @export
-generate_mag_pag <- function(size, prob, L_fraction, seed=NA) {
+generate_mag_pag <- function(size, prob, L_fraction, seed=NA, pick_latent_by_count=FALSE, latent_count=NULL) {
     
     if (!is.na(seed)) {
         set.seed(seed)
@@ -36,14 +40,18 @@ generate_mag_pag <- function(size, prob, L_fraction, seed=NA) {
     V.source <- names(which(colSums(d.amat) == 0))
     V.confounders <- names(which(rowSums(d.amat) == 2))
     L.candidates <- union(V.source, V.confounders)
-    L.size <- as.integer(max(1, L_fraction * length(L.candidates)))
-    if (L.size == length(L.candidates)) {
-        # next
-        L <- L.candidates
-        # print(L.candidates)
-        # print(L.size)
+    if (pick_latent_by_count) {
+        L.size <- latent_count
     }
-    L <- sample(L.candidates, L.size)
+    else {
+        L.size <- as.integer(max(1, L_fraction * length(L.candidates)))
+    }
+    if (L.size >= length(L.candidates)) {
+        L <- L.candidates
+    }
+    else {
+        L <- sample(L.candidates, L.size)
+    }
     
     # Get MAG and PAG
     m <- edag2mag(d, V, L)
@@ -55,7 +63,10 @@ generate_mag_pag <- function(size, prob, L_fraction, seed=NA) {
     rownames(mag) <- colnames(mag) <- c(1:num_nodes)
     rownames(pag) <- colnames(pag) <- c(1:num_nodes)
     
-    return(list("mag"=mag, "pag"=pag))
+    # Get observed variables (excluding latent)
+    V_observed <- setdiff(V, L)
+    
+    return(list("mag"=mag, "pag"=pag, "dag"=d, "V"=V_observed, "L"=L))
 }
 
 
