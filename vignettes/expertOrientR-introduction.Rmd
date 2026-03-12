@@ -115,7 +115,8 @@ When completeing the orientation rules, we are turning off:
 ```{r complete rules}
 rules_to_use <- c(TRUE, TRUE, FALSE, TRUE, FALSE,
                   FALSE, FALSE, TRUE, FALSE, TRUE,
-                  FALSE, TRUE, TRUE)
+                  FALSE, TRUE, TRUE, TRUE, FALSE,
+                  FALSE, FALSE, TRUE)
 
 result <- expertOrientR::complete_pag(PAG_with_bg, rules=rules_to_use, verbose=TRUE)
 G <- result$pag

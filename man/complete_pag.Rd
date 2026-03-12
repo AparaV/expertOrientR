@@ -13,7 +13,7 @@ The matrix follows the convention in pcalg: 0 refers to no edge. 1 refers to cir
 2 refers to an arrowhead and 3 refers to a tail. For example, \code{pag[a, b] = 2} and \code{pag[b, a] = 1}
 says that the edge is \verb{a o-> b}.}
 
-\item{rules}{A boolean vector of length 13 indicating which rules are to be invoked}
+\item{rules}{A boolean vector of length 18 indicating which rules are to be invoked}
 
 \item{verbose}{Boolean indicating verboseness}
 
@@ -22,7 +22,7 @@ says that the edge is \verb{a o-> b}.}
 \value{
 A list with two named elements, \code{pag} and \code{counter}.
 \code{pag} is the adjacency matrix obtained after completing all the rules turned on in the \code{rules} parameter.
-\code{counter} is a vector of length 13 indicating how many times each rule was invoked.
+\code{counter} is a vector of length 18 indicating how many times each rule was invoked.
 }
 \description{
 Perform orientation on an ancestral partial mixed graph to restrict equivalence class to expert knowledge.
